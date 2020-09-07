@@ -74,28 +74,33 @@ public class GameDeveloper {
 
         int[][] no_board = new int[width][height];
 
-        no_board[nx][ny] = 1;   // 갔던곳 표시
+        for(int i = 0 ; i < board.length ; i++) {
+            for(int j = 0 ; j < board[0].length ; j++) {
+                if(board[i][j] == 1) {
+                    no_board[i][j] = 1;
+                }
+            }
+        }
+
+        no_board[nx][ny] = 1;
 
         // 시뮬레이션
         while(true) {
-            System.out.println( "x 좌표 : " + nx + ", y 좌표 :" + ny);
-//            System.out.println(NoBoardWalk(no_board, nx, ny, direction));
-//            System.out.println(board[nx + dx[direction]][ny + dy[direction]] == 0 );
+
             // 전방에 안간 곳이 있고,  바다가 바로 앞에 아닐때
             if( NoBoardWalk(no_board, nx, ny, direction) && board[nx + dx[direction]][ny + dy[direction]] == 0 ) {
                 nx += dx[direction];
                 ny += dy[direction];
                 no_board[nx][ny] = 1;
                 time++;
+                turn_time = 0;
             // 전방에 모두 갔고 앞에 바다가 있을때 회전
             } else if ( !NoBoardWalk(no_board, nx, ny, direction) || board[nx + dx[direction]][ny + dy[direction]] == 1) {
                 if(turn_time != 4) {    // 제자리에서 4번 돌지 않았을 때,
                     direction = TurnLeft(direction);
                     turn_time += 1;
                 } else {                // 제자리에서 4번 돌았을 때,
-                    if(board[nx - dx[direction]][ny - dy[direction]] == 1 ) {
-                        break;
-                    }
+                    break;
                 }
             }
         }
@@ -109,27 +114,26 @@ public class GameDeveloper {
 
         switch(direction) {
             case 0: // 북쪽
-                for(int i = height ; i > 0 ; --i) {
-                    System.out.println(board[i]);
-                    if(board[width][i] == 0)
+                for(int i = width ; i > 0 ; --i) {
+                    if(board[i][width] == 0)
                         return true;
                 }
                 break;
             case 1: // 왼쪽
-                for(int i = width ; i > 0 ; --i) {
-                    if(board[i][height] == 0)
-                        return true;
-                }
-                break;
-            case 2: // 남쪽
-                for(int i = height ; i < board.length ; ++i) {
+                for(int i = height ; i > 0 ; --i) {
                     if(board[width][i] == 0)
                         return true;
                 }
                 break;
-            case 3: // 오른쪽(동쪽)
-                for(int i = width ; i < board[0].length ; ++i) {
+            case 2: // 남쪽
+                for(int i = width ; i < board.length ; ++i) {
                     if(board[i][height] == 0)
+                        return true;
+                }
+                break;
+            case 3: // 오른쪽(동쪽)
+                for(int i = height ; i < board[0].length ; ++i) {
+                    if(board[width][i] == 0)
                         return true;
                 }
                 break;
